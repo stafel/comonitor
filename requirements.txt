@@ -1,3 +1,5 @@
 hidapi
 fastapi[standard]
+fastapi-utils
+typing-inspect
 prometheus-fastapi-instrumentator
