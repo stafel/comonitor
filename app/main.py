@@ -1,15 +1,3 @@
-# do not forget to provide permisson to your device like:
-# $ sudo chmod go+rw /dev/bus/usb/001/005
-#
-#
-# or create udev rule in file /etc/udev/rules.d/50-local-raw-usb.rules:
-# ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a052",  MODE="0666", GROUP="plugdev", TAG+="uaccess"
-## or
-# SUBSYSTEM=="usb", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a052",  MODE="0666"
-# 
-# and restart udev 
-# $ sudo udevadm control --reload-rules && sudo udevadm trigger
-
 import sys
 import time
 import hid
@@ -21,6 +9,8 @@ app = FastAPI()
 
 Instrumentator().instrument(app).expose(app)
 
+DEVICE_PATH = b"/dev/comonitor"
+
 vid = 0x04d9
 pid = 0xa052
 
@@ -29,7 +19,8 @@ measurements = []
 try:
     print("Opening the device")
     h = hid.device()
-    h.open(vid, pid) 
+    #h.open(vid, pid) # this wont work with only the symlinked device path
+    h.open_path(DEVICE_PATH)
 
     print("Manufacturer: %s" % h.get_manufacturer_string())
     print("Product: %s" % h.get_product_string())
@@ -93,7 +84,7 @@ def get_metrics():
     return ret_temp, ret_co2
 
 
-@app.on_event("startup")
+@app.on_event("startup") # depricated
 @repeat_every(seconds=60)
 def measure():
     global measurements
@@ -104,3 +95,7 @@ def measure():
 @app.get("/json")
 def ret_json():
     return measurements
+
+# hardcoded first time check
+#metrics = get_metrics()
+#measurements.append({"timestamp": time.time(), "temp": metrics[0], "co2": metrics[1]})

@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: monitor
+  namespace: rmon
+spec:
+  selector:
+    matchLabels:
+      name: monitor
+  
+  template:
+    metadata:
+      labels:
+        name: monitor
+    
+    spec:
+      nodeSelector:
+        monitor: co2
+
+      containers:
+        - name: comonitor
+          image: harbor.maus.local/library/comonitor:v0.0.1
+          ports:
+            - name: webport
+              containerPort: 8000
+          volumeMounts:
+            - name: monitordevice
+              mountPath: /dev/comonitor
+          securityContext:
+            privileged: true
+      
+      volumes:
+        - name: monitordevice
+          hostPath:
+            path: /dev/comonitor
+            type: CharDevice # BlockDevice

@@ -1,0 +1,35 @@
+---
+- name: Configure HID
+
+  hosts:
+    - comonitors
+
+  tasks:
+    - name: Ensure packages installed
+      ansible.builtin.package:
+        name:
+          - libudev-dev
+          - build-essential
+          - pkg-config
+      become: yes
+    
+    - name: Ensure udev rule present
+      ansible.builtin.copy:
+        dest: /etc/udev/rules.d/50-local-raw-usb-co2monitor.rules
+        content: SUBSYSTEM=="hidraw", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a052",  MODE="0666", GROUP="plugdev", TAG+="uaccess", SYMLINK+="comonitor"
+      notify: reload udev
+      become: yes
+
+    - name: Label k8s node
+      ansible.builtin.command:
+        cmd: "kubectl label node {{ inventory_hostname }} monitor=co2 --overwrite"
+      register: node_label_register
+      changed_when: node_label_register.rc == 0
+      delegate_to: localhost
+
+  handlers:
+    - name: Reload udev rules
+      listen: reload udev
+      ansible.builtin.shell:
+        cmd: udevadm control --reload-rules && udevadm trigger
+      become: yes
