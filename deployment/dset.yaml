@@ -20,7 +20,7 @@ spec:
 
       containers:
         - name: comonitor
-          image: harbor.maus.local/library/comonitor:v0.0.1
+          image: harbor.maus.home.arpa/library/comonitor:v0.0.2
           ports:
             - name: webport
               containerPort: 8000

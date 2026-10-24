@@ -37,9 +37,9 @@ ls -l /dev/comonitor
 Build and push the image into harbor
 
 ```bash
-podman build -t comonitor:v0.0.1 .
+podman build -t comonitor:v0.0.1 --platform linux/amd64,linux/arm64  --manifest manifest-comonitor:v0.0.1 .
 podman login harbor.maus.local
-podman push comonitor:v0.0.1 harbor.maus.local/library/comonitor:v0.0.1
+podman manifest push manifest-comonitor:v0.0.1 harbor.maus.local/library/comonitor:v0.0.1
 ```
 
 
