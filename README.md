@@ -46,5 +46,5 @@ podman manifest push manifest-comonitor:v0.0.1 harbor.maus.local/library/comonit
 Local test, pass the device into the container.
 
 ```bash
-podman run --rm -it -p 8000:8000 --device /dev/comonitor:/dev/comonitor monitor
+podman run --rm -it -p 8000:8000 --device /dev/comonitor:/dev/comonitor comonitor:v0.0.1
 ```
