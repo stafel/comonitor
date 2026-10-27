@@ -14,5 +14,4 @@ RUN HIDAPI_WITH_HIDRAW=1 pip install --no-binary=hidapi -r requirements.txt
 
 COPY app/ .
 
-#CMD [ "python", "./main.py" ]
-CMD [ "fastapi", "run", "./main.py"]
+CMD [ "python", "./main.py" ]

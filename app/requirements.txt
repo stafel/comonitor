@@ -1,5 +1,4 @@
 hidapi
-fastapi[standard]
-fastapi-utils
 typing-inspect
-opentelemetry-instrumentation
+opentelemetry-api
+opentelemetry-sdk
