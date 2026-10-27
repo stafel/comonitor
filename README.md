@@ -5,10 +5,8 @@ CO2 Monitor as Daemonset deployment
 ## Todo
 
 Todo:
-- fix depricated fastapi 60s loop
 - collect data
 - grafana dashboard
-- raspi
 
 ## Install
 
