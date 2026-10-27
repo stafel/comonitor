@@ -3,18 +3,21 @@ import time
 import hid
 from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
-from prometheus_fastapi_instrumentator import Instrumentator
+from opentelemetry import metrics
+import asyncio
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+# acquire a meter
+meter = metrics.get_meter("comonitor.meter")
 
-Instrumentator().instrument(app).expose(app)
+# create a gauge
+coconcentration_gauge = meter.create_gauge("comonitor.coconc", unit="[ppm]", description="CO2 concentration in parts per million")
+temperature_gauge = meter.create_gauge("comonitor.temp", unit="Cel", description="Temperature in degrees Celsius")
 
 DEVICE_PATH = b"/dev/comonitor"
 
 vid = 0x04d9
 pid = 0xa052
-
-measurements = []
 
 try:
     print("Opening the device")
@@ -81,21 +84,27 @@ def get_metrics():
         print("Update the h.open() line in this script with the one")
         print("from the enumeration list output above and try again.")
     
+    coconcentration_gauge.set(ret_co2) # attributes={"room": "roomname"}
+    temperature_gauge.set(ret_temp)
+
     return ret_temp, ret_co2
 
+async def run_every_60s():
+    while True:
+        await asyncio.sleep(60)
+        try:
+            get_metrics()  # your periodic logic
+        except Exception as ex:
+            print(ex)
 
-@app.on_event("startup") # depricated
-@repeat_every(seconds=60)
-def measure():
-    global measurements
-    metrics = get_metrics()
-    measurements.append({"timestamp": time.time(), "temp": metrics[0], "co2": metrics[1]})
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    task = asyncio.create_task(run_every_60s())
+    yield
+    task.cancel()  # runs on shutdown
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
 
-
-@app.get("/json")
-def ret_json():
-    return measurements
-
-# hardcoded first time check
-#metrics = get_metrics()
-#measurements.append({"timestamp": time.time(), "temp": metrics[0], "co2": metrics[1]})
+app = FastAPI(lifespan=lifespan)
