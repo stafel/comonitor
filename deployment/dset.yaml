@@ -27,6 +27,11 @@ spec:
           volumeMounts:
             - name: monitordevice
               mountPath: /dev/comonitor
+          env:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector-collector.grafana.svc.cluster.local:4318"
+            - name: OTEL_EXPORTER_OTLP_TIMEOUT
+              value: "10"
           securityContext:
             privileged: true
       

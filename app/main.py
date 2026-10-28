@@ -8,7 +8,7 @@ from opentelemetry.sdk.resources import Resource
 
 resource = Resource.create({"service.name": "comonitor"})
 reader = PeriodicExportingMetricReader(
-    ConsoleMetricExporter(),
+    OTLPMetricExporter(),          # reads OTEL_EXPORTER_OTLP_* env vars when no args given (OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector.observability:4318", OTEL_EXPORTER_OTLP_TIMEOUT="10")
     export_interval_millis=60_000,  # push every 60s
 )
 metrics.set_meter_provider(MeterProvider(resource=resource, metric_readers=[reader]))
