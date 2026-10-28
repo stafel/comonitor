@@ -5,6 +5,7 @@ from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader, ConsoleMetricExporter
 from opentelemetry.sdk.resources import Resource
+from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
 
 resource = Resource.create({"service.name": "comonitor"})
 reader = PeriodicExportingMetricReader(
