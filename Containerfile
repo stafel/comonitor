@@ -1,7 +1,5 @@
 FROM python:3
 
-EXPOSE 8000
-
 WORKDIR /app
 
 RUN apt-get update \

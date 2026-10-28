@@ -21,9 +21,6 @@ spec:
       containers:
         - name: comonitor
           image: harbor.maus.home.arpa/library/comonitor:v0.0.8
-          ports:
-            - name: webport
-              containerPort: 8000
           volumeMounts:
             - name: monitordevice
               mountPath: /dev/comonitor
