@@ -20,7 +20,7 @@ spec:
 
       containers:
         - name: comonitor
-          image: harbor.maus.home.arpa/library/comonitor:v0.0.8
+          image: harbor.maus.home.arpa/library/comonitor:v0.0.9
           volumeMounts:
             - name: monitordevice
               mountPath: /dev/comonitor
