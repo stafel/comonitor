@@ -23,6 +23,11 @@ temperature_gauge = meter.create_gauge("comonitor.temp", unit="Cel", description
 
 DEVICE_PATH = b"/dev/comonitor"
 
+NODE_NAME_TO_ROOM_NAME_MAP = {"regal": "kitchen", "maus": "living room"}
+
+def get_attributes():
+    return {"room_name": NODE_NAME_TO_ROOM_NAME_MAP.get(os.getenv("NODE_NAME"), "unknown")}
+
 def open_device():
     try:
         print("Opening the device")
@@ -68,10 +73,10 @@ def get_metrics(h):
                 if metric == 0x42: # temperature
                     metric_value = metric_value / 16 - 273.15
                     ret_temp = metric_value
-                    temperature_gauge.set(ret_temp)
+                    temperature_gauge.set(ret_temp, attributes=get_attributes())
                 elif metric == 0x50: # CO2
                     ret_co2 = metric_value
-                    coconcentration_gauge.set(ret_co2) # attributes={"room": "roomname"}
+                    coconcentration_gauge.set(ret_co2, attributes=get_attributes())
                 elif metric == 0x44: # humidity
                     continue
                 else: # unknown

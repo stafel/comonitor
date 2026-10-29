@@ -5,7 +5,8 @@ CO2 Monitor as Daemonset deployment
 ## Todo
 
 Todo:
-- collect data
+- add attributes to data
+- push data to grafana
 - grafana dashboard
 
 ## Install

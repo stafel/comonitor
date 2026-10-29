@@ -20,7 +20,7 @@ spec:
 
       containers:
         - name: comonitor
-          image: harbor.maus.home.arpa/library/comonitor:v0.0.9
+          image: harbor.maus.home.arpa/library/comonitor:v0.0.10
           volumeMounts:
             - name: monitordevice
               mountPath: /dev/comonitor
@@ -29,6 +29,10 @@ spec:
               value: "http://otel-collector-collector.grafana.svc.cluster.local:4318"
             - name: OTEL_EXPORTER_OTLP_TIMEOUT
               value: "10"
+            - name: NODE_NAME      # unique per pod: the node it runs on
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           securityContext:
             privileged: true
       
