@@ -20,10 +20,12 @@ spec:
 
       containers:
         - name: comonitor
-          image: harbor.maus.home.arpa/library/comonitor:v0.0.11
+          image: harbor.maus.home.arpa/library/comonitor:v0.0.12
           volumeMounts:
             - name: monitordevice
               mountPath: /dev/comonitor
+            - name: config 
+              mountPath: /app
           env:
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://otel-collector-collector.grafana.svc.cluster.local:4318"
@@ -41,3 +43,6 @@ spec:
           hostPath:
             path: /dev/comonitor
             type: CharDevice # BlockDevice
+        - name: config 
+          configMap: 
+            name: rooms

@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rooms
+  namespace: rmon
+data:
+  rooms.ini: |
+    [ROOMS]
+    regal = bedroom
+    maus = living room

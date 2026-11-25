@@ -2,6 +2,8 @@ import os
 import sys
 import time
 import hid
+import configparser
+
 from opentelemetry import metrics
 from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader, ConsoleMetricExporter
@@ -24,7 +26,20 @@ temperature_gauge = meter.create_gauge("comonitor.temp", unit="Cel", description
 
 DEVICE_PATH = b"/dev/comonitor"
 
-NODE_NAME_TO_ROOM_NAME_MAP = {"regal": "kitchen", "maus": "living room"}
+
+
+print("Reading room config")
+
+config = configparser.ConfigParser()
+config.read('rooms.ini')
+
+print(f"Config sections {config.sections()}")
+
+NODE_NAME_TO_ROOM_NAME_MAP = config['ROOMS']
+
+print(f"Rooms {config['ROOMS']}")
+
+
 
 def get_attributes():
     return {"room_name": NODE_NAME_TO_ROOM_NAME_MAP.get(os.getenv("NODE_NAME"), "unknown")}
