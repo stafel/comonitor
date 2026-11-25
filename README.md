@@ -14,6 +14,16 @@ Todo:
 Configure the nodes with the config_hid.yaml playbook and apply the deployment.
 
 
+## Distroless runtime image
+
+`Containerfile.distroless` builds the exporter on `gcr.io/distroless/python3-debian13`
+(amd64 + arm64) instead of `python:3-slim`. See [docs/distroless.md](docs/distroless.md).
+
+```bash
+podman build -f Containerfile.distroless -t comonitor:distroless \
+  --platform linux/amd64,linux/arm64 --manifest manifest-comonitor:distroless .
+```
+
 ## Manual steps for testing
 
 Create the udev (/etc/udev/rules.d/50-local-raw-usb-co2monitor.rules) rule.
