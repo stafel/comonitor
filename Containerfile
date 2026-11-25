@@ -1,9 +1,9 @@
-FROM python:3
+FROM python:3-slim
 
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libudev-dev pkg-config \
+    && apt-get install -y --no-install-recommends build-essential libudev-dev pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 COPY app/requirements.txt requirements.txt
